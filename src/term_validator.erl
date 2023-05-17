@@ -105,6 +105,8 @@ validators() ->
     #{
         atom => atom_validator,
         bool => bool_validator,
+        number => number_validator,
+        string => string_validator,
         list => list_validator,
         tuple => tuple_validator,
         map => map_validator,
