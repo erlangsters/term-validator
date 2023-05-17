@@ -107,7 +107,9 @@ validators() ->
         bool => bool_validator,
         list => list_validator,
         tuple => tuple_validator,
-        map => map_validator
+        map => map_validator,
+        any_of => any_of_validator,
+        all_of => all_of_validator
     }.
 
 -spec has_missing_options(validator_options(), [validator_option_name()]) ->
