@@ -104,7 +104,10 @@ validate(Term, Format, Validators) ->
 validators() ->
     #{
         atom => atom_validator,
-        bool => bool_validator
+        bool => bool_validator,
+        list => list_validator,
+        tuple => tuple_validator,
+        map => map_validator
     }.
 
 -spec has_missing_options(validator_options(), [validator_option_name()]) ->
