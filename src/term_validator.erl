@@ -123,7 +123,11 @@ has_missing_options(Options, MandatoryOptions) ->
     no | {yes, [validator_option_name()]}.
 has_invalid_options(Options, ValidatorOptions) ->
     % We check validity of options one by one and add them to a list.
-    InvalidOptions = lists:foldr(fun({Name, _Value}, InvalidOptions) ->
+    InvalidOptions = lists:foldr(fun(Option, InvalidOptions) ->
+        Name = case Option of
+            {Name_, _Value} -> Name_;
+            Name_ -> Name_
+        end,
         case lists:member(Name, ValidatorOptions) of
             true -> InvalidOptions;
             false -> [Name | InvalidOptions]
