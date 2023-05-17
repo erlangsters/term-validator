@@ -103,7 +103,8 @@ validate(Term, Format, Validators) ->
 %%
 validators() ->
     #{
-        atom => atom_validator
+        atom => atom_validator,
+        bool => bool_validator
     }.
 
 -spec has_missing_options(validator_options(), [validator_option_name()]) ->
