@@ -17,10 +17,19 @@
 -export([post_validate/2]).
 
 mandatory_options() -> [].
-options() -> [].
+options() -> [allow_number].
 
-pre_validate(Term, _Options, _Validators) ->
-    {valid, Term}.
+pre_validate(true, _Options, _Validators) ->
+    {valid, true};
+pre_validate(false, _Options, _Validators) ->
+    {valid, false};
+pre_validate(Term, Options, _Validators) ->
+    case lists:member(allow_number, Options) of
+        true ->
+            {valid, Term};
+        false ->
+            {invalid, not_bool}
+    end.
 
 validate(Term, _Option, _Validators) ->
     {valid, Term}.
