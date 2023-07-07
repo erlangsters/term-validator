@@ -144,7 +144,7 @@ string_validator_pattern_test() ->
 
     valid = term_validator:validate(
         "Hello world!",
-        {string, [{pattern_mismatch, "^Hello"}]}
+        {string, [{pattern, "^Hello"}]}
     ),
 
     ok.
