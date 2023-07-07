@@ -5,7 +5,7 @@
 %% released under the MIT license. Please refer to the LICENSE.txt file that
 %% can be found at the root of the project directory.
 %%
-%% Written by Jonathan De Wachter <jonathan.dewachter@byteplug.io>, March 2023
+%% Written by Jonathan De Wachter <jonathan.dewachter@byteplug.io>, July 2023
 %%
 -module(number_validator).
 -behaviour(term_validator).
@@ -17,10 +17,61 @@
 -export([post_validate/2]).
 
 mandatory_options() -> [].
-options() -> [].
+options() -> [min, max, integer_only, multiple_of].
 
-pre_validate(Term, _Options, _Validators) ->
-    {valid, Term}.
+pre_validate(Term, _Options, _Validators) when is_number(Term) ->
+    {valid, Term};
+pre_validate(_Term, _Options, _Validators) ->
+    {invalid, not_number}.
+
+validate(Term, {min, {Min, inclusive}}, _Validators) ->
+    case Term >= Min of
+        true ->
+            {valid, Term};
+        false ->
+            {invalid, {must_be_greater_or_equal_to, Min}}
+    end;
+validate(Term, {min, {Min, exclusive}}, _Validators) ->
+    case Term > Min of
+        true ->
+            {valid, Term};
+        false ->
+            {invalid, {must_be_strictly_greater_than, Min}}
+    end;
+validate(Term, {min, Min}, _Validators) ->
+    validate(Term, {min, {Min, inclusive}}, _Validators);
+
+validate(Term, {max, {Max, inclusive}}, _Validators) ->
+    case Term =< Max of
+        true ->
+            {valid, Term};
+        false ->
+            {invalid, {must_be_lower_or_equal_to, Max}}
+    end;
+validate(Term, {max, {Max, exclusive}}, _Validators) ->
+    case Term < Max of
+        true ->
+            {valid, Term};
+        false ->
+            {invalid, {must_be_strictly_lower_than, Max}}
+    end;
+validate(Term, {max, Max}, _Validators) ->
+    validate(Term, {max, {Max, inclusive}}, _Validators);
+
+validate(Term, integer_only, _Validators) when is_float(Term) ->
+    {invalid, must_be_integer};
+
+validate(Term, {multiple_of, Value}, _Validators) when not is_integer(Term) ->
+    % The 'multiple_of' implies integers only; if it's not an integer, it's not
+    % a multiple of anything.
+    {invalid, {must_be_multiple_of, Value}};
+validate(Term, {multiple_of, Value}, _Validators) ->
+    case Term rem Value of
+        0 ->
+            {valid, Term};
+        _ ->
+            {invalid, {must_be_multiple_of, Value}}
+    end;
 
 validate(Term, _Option, _Validators) ->
     {valid, Term}.
