@@ -16,14 +16,22 @@
 -export([validate/3]).
 -export([post_validate/2]).
 
-mandatory_options() -> [].
+mandatory_options() -> [formats].
 options() -> [].
 
 pre_validate(Term, _Options, _Validators) ->
     {valid, Term}.
 
-validate(Term, _Option, _Validators) ->
-    {valid, Term}.
+validate(Term, {formats, Formats}, Validators) ->
+    Result = lists:any(fun(Format) ->
+        term_validator:validate(Term, Format, Validators) == valid
+    end, Formats),
+    case Result of
+        true ->
+            {valid, Term};
+        false ->
+            {invalid, {not_any_of, Formats}}
+    end.
 
 post_validate(_Term, _Validators) ->
     valid.

@@ -5,10 +5,28 @@
 %% released under the MIT license. Please refer to the LICENSE.txt file that
 %% can be found at the root of the project directory.
 %%
-%% Written by Jonathan De Wachter <jonathan.dewachter@byteplug.io>, March 2023
+%% Written by Jonathan De Wachter <jonathan.dewachter@byteplug.io>, July 2023
 %%
 -module(any_of_validator_test).
 -include_lib("eunit/include/eunit.hrl").
 
 any_of_validator_test() ->
+    AnyFormats = [
+        bool,
+        {number, [integer_only]},
+        {string, [ascii, {pattern, "^Hello"}]}
+    ],
+    Format = {any_of, [{formats, AnyFormats}]},
+
+    {invalid, {not_any_of, AnyFormats}} = term_validator:validate(yolo, Format),
+    valid = term_validator:validate(true, Format),
+    valid = term_validator:validate(false, Format),
+    valid = term_validator:validate(42, Format),
+    {invalid, {not_any_of, AnyFormats}} = term_validator:validate(42.5, Format),
+    valid = term_validator:validate("Hello world!", Format),
+    {invalid, {not_any_of, AnyFormats}} = term_validator:validate("Hi world!", Format),
+    {invalid, {not_any_of, AnyFormats}} = term_validator:validate([], Format),
+    {invalid, {not_any_of, AnyFormats}} = term_validator:validate({}, Format),
+    {invalid, {not_any_of, AnyFormats}} = term_validator:validate(#{}, Format),
+
     ok.
