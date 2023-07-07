@@ -103,6 +103,7 @@ validate(Term, Format, Validators) ->
 %%
 validators() ->
     #{
+        any => any_validator,
         atom => atom_validator,
         bool => bool_validator,
         number => number_validator,
