@@ -5,7 +5,7 @@
 %% released under the MIT license. Please refer to the LICENSE.txt file that
 %% can be found at the root of the project directory.
 %%
-%% Written by Jonathan De Wachter <jonathan.dewachter@byteplug.io>, March 2023
+%% Written by Jonathan De Wachter <jonathan.dewachter@byteplug.io>, July 2023
 %%
 -module(tuple_validator).
 -behaviour(term_validator).
@@ -16,15 +16,35 @@
 -export([post_validate/2]).
 
 options(mandatory) ->
-    [];
+    [elements];
 options(optional) ->
     [].
 
-pre_validate(Term, Options, _Validators) ->
-    {valid, Term, Options}.
+pre_validate(Term, Options, _Validators) when is_tuple(Term) ->
+    {valid, Term, Options};
+pre_validate(_Term, _Options, _Validators) ->
+    {invalid, not_tuple}.
 
-validate(Term, _Option, _Validators) ->
-    {valid, Term}.
+validate(Term, {elements, Elements}, Validators) ->
+    Result = lists:foldr(
+        fun({Format, Index}, Accumulator) ->
+            Element = element(Index, Term),
+            case term_validator:validate(Element, Format, Validators) of
+                valid ->
+                    Accumulator;
+                {invalid, Reason} ->
+                    [{Index, Reason}|Accumulator]
+            end
+        end,
+        [],
+        lists:zip(Elements, lists:seq(1, length(Elements)))
+    ),
+    case Result of
+        [] ->
+            {valid, Term};
+        _ ->
+            {invalid, {elements, Result}}
+    end.
 
 post_validate(_Term, _Validators) ->
     valid.
