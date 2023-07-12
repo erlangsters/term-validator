@@ -9,6 +9,16 @@
 %%
 -module(term_validator).
 
+-export_type([validator_name/0]).
+
+-export_type([option_name/0]).
+-export_type([option_value/0]).
+-export_type([option/0]).
+
+-export_type([options/0]).
+-export_type([format/0]).
+-export_type([validators/0]).
+
 -export([validate/2, validate/3]).
 -export([validators/0]).
 
@@ -18,23 +28,25 @@
 %% To be written.
 %%
 -type validator_name() :: atom().
--type validator_option_name() :: atom().
--type validator_option() :: {validator_option_name(), term()}.
--type validator_options() :: [validator_option()].
--type term_format() :: validator_name() | {validator_name(), validator_options()}.
 
+-type option_name() :: atom().
+-type option_value() :: term().
+-type option() :: {atom(), term()}.
+
+-type options() :: [option()].
+-type format() :: validator_name() | {validator_name(), options()}.
 -type validators() :: #{
     validator_name() := module()
 }.
 
--callback mandatory_options() -> [validator_option_name()].
--callback options() -> [validator_option_name()].
+-callback mandatory_options() -> [option_name()].
+-callback options() -> [option_name()].
 
--callback pre_validate(term(), validator_options(), validators()) ->
+-callback pre_validate(term(), options(), validators()) ->
     {valid, term()} |
     {invalid, Reason :: term()}
 .
--callback validate(term(), validator_option(), validators()) ->
+-callback validate(term(), option(), validators()) ->
     {valid, term()} |
     {invalid, Reason :: term()} |
     {invalid_option_value, Reason :: term()}
@@ -48,9 +60,9 @@
     valid |
     {invalid, Reason :: term()} |
     {no_validator, validator_name()} |
-    {missing_options, [atom()]} |
-    {invalid_options, [atom()]} |
-    {invalid_option_value, atom(), Reason :: term()}
+    {missing_options, [option_name()]} |
+    {invalid_options, [option_name()]} |
+    {invalid_option_value, option_name(), Reason :: term()}
 .
 
 %%
@@ -58,7 +70,7 @@
 %%
 %% Long description.
 %%
--spec validate(term(), term_format()) -> validate_ret().
+-spec validate(term(), format()) -> validate_ret().
 validate(Term, Format) ->
     validate(Term, Format, validators()).
 
@@ -67,7 +79,7 @@ validate(Term, Format) ->
 %%
 %% Long description.
 %%
--spec validate(term(), term_format(), validators()) -> validate_ret().
+-spec validate(term(), format(), validators()) -> validate_ret().
 validate(Term, Format, Validators) ->
     {Name, Options} = case Format of
         {Name_, Options_} ->
@@ -115,8 +127,8 @@ validators() ->
         all_of => all_of_validator
     }.
 
--spec has_missing_options(validator_options(), [validator_option_name()]) ->
-    no | {yes, [validator_option_name()]}.
+-spec has_missing_options(options(), [option_name()]) ->
+    no | {yes, [option_name()]}.
 has_missing_options(Options, MandatoryOptions) ->
     % We remove mandatory option one by one if they're present. If there's
     % remaining mandatory options, then we have missing options.
@@ -128,8 +140,8 @@ has_missing_options(Options, MandatoryOptions) ->
         _ -> {yes, RemainingOptions}
     end.
 
--spec has_invalid_options(validator_options(), [validator_option_name()]) ->
-    no | {yes, [validator_option_name()]}.
+-spec has_invalid_options(options(), [option_name()]) ->
+    no | {yes, [option_name()]}.
 has_invalid_options(Options, ValidatorOptions) ->
     % We check validity of options one by one and add them to a list.
     InvalidOptions = lists:foldr(fun(Option, InvalidOptions) ->
@@ -147,7 +159,7 @@ has_invalid_options(Options, ValidatorOptions) ->
         _ -> {yes, InvalidOptions}
     end.
 
--spec validate_term(any(), term(), validator_options(), validators()) ->
+-spec validate_term(any(), term(), options(), validators()) ->
     valid | {invalid | Reason :: term()}.
 validate_term(Validator, Term, Options, Validators) ->
     case Validator:pre_validate(Term, Options, Validators) of
