@@ -76,6 +76,60 @@ term_validator_invalid_options_test() ->
     meck:unload(yolo_validator),
     ok.
 
+term_validator_dynamic_mandatory_options_test() ->
+    meck:new(yolo_validator, [non_strict]),
+    meck:expect(yolo_validator, options, fun
+        (mandatory) -> dynamic;
+        (optional) -> []
+    end),
+    meck:expect(yolo_validator, pre_validate, fun(Term, _, _) -> {valid, Term} end),
+    meck:expect(yolo_validator, validate, fun(Term, _, _) -> {valid, Term} end),
+    meck:expect(yolo_validator, post_validate, fun(_, _) -> valid end),
+
+    Validators = #{yolo => yolo_validator},
+    valid = term_validator:validate(42, {yolo, [{foo, 42}]}, Validators),
+
+    meck:expect(yolo_validator, pre_validate, fun(_, _, _) ->
+        {missing_options, [foo]}
+    end),
+    {missing_options, [foo]} = term_validator:validate(42, yolo, Validators),
+
+    meck:expect(yolo_validator, pre_validate, fun(_, _, _) ->
+        {invalid_options, [foo]}
+    end),
+    {invalid_options, [foo]} = term_validator:validate(42, {yolo, [{bar, 42}]}, Validators),
+
+    meck:unload(yolo_validator),
+
+    ok.
+
+term_validator_dynamic_optional_options_test() ->
+    meck:new(yolo_validator, [non_strict]),
+    meck:expect(yolo_validator, options, fun
+        (mandatory) -> [];
+        (optional) -> dynamic
+    end),
+    meck:expect(yolo_validator, pre_validate, fun(Term, _, _) -> {valid, Term} end),
+    meck:expect(yolo_validator, validate, fun(Term, _, _) -> {valid, Term} end),
+    meck:expect(yolo_validator, post_validate, fun(_, _) -> valid end),
+
+    Validators = #{yolo => yolo_validator},
+    valid = term_validator:validate(42, {yolo, [{foo, 42}]}, Validators),
+
+    meck:expect(yolo_validator, pre_validate, fun(_, _, _) ->
+        {missing_options, [foo]}
+    end),
+    {missing_options, [foo]} = term_validator:validate(42, yolo, Validators),
+
+    meck:expect(yolo_validator, pre_validate, fun(_, _, _) ->
+        {invalid_options, [foo]}
+    end),
+    {invalid_options, [foo]} = term_validator:validate(42, {yolo, [{bar, 42}]}, Validators),
+
+    meck:unload(yolo_validator),
+
+    ok.
+
 term_validator_pre_validate_test() ->
     Options = [{foo, true}, {bar, 42}, {quz, "Hello world!"}],
 

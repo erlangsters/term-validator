@@ -39,11 +39,13 @@
     validator_name() := module()
 }.
 
--callback options(mandatory | optional) -> [option_name()].
+-callback options(mandatory | optional) -> dynamic | [option_name()].
 
 -callback pre_validate(term(), options(), validators()) ->
     {valid, term()} |
-    {invalid, Reason :: term()}
+    {invalid, Reason :: term()} |
+    {missing_options, [option_name()]} |
+    {invalid_options, [option_name()]}
 .
 -callback validate(term(), option(), validators()) ->
     {valid, term()} |
@@ -93,16 +95,23 @@ validate(Term, Format, Validators) ->
         Validator ->
             MandatoryOptions = Validator:options(mandatory),
             OptionalOptions = Validator:options(optional),
-            AllOptions = MandatoryOptions ++ OptionalOptions,
-            case has_missing_options(Options, MandatoryOptions) of
-                {yes, MissingOptions} ->
-                    {missing_options, MissingOptions};
+            case has_dynamic_options(MandatoryOptions, OptionalOptions) of
+                yes ->
+                    % If the validator has dynamic options, it becomes
+                    % responsible for validating the options itself.
+                    validate_term(Validator, Term, Options, Validators);
                 no ->
-                    case has_invalid_options(Options, AllOptions) of
-                        {yes, InvalidOptions} ->
-                            {invalid_options, InvalidOptions};
+                    AllOptions = MandatoryOptions ++ OptionalOptions,
+                    case has_missing_options(Options, MandatoryOptions) of
+                        {yes, MissingOptions} ->
+                            {missing_options, MissingOptions};
                         no ->
-                            validate_term(Validator, Term, Options, Validators)
+                            case has_invalid_options(Options, AllOptions) of
+                                {yes, InvalidOptions} ->
+                                    {invalid_options, InvalidOptions};
+                                no ->
+                                    validate_term(Validator, Term, Options, Validators)
+                            end
                     end
             end
     end.
@@ -125,6 +134,14 @@ validators() ->
         any_of => any_of_validator,
         all_of => all_of_validator
     }.
+
+-spec has_dynamic_options(options(), options()) -> yes | no.
+has_dynamic_options(_MandatoryOptions, dynamic) ->
+    yes;
+has_dynamic_options(dynamic, _OptionalOptions) ->
+    yes;
+has_dynamic_options(_MandatoryOptions, _OptionalOptions) ->
+    no.
 
 -spec has_missing_options(options(), [option_name()]) ->
     no | {yes, [option_name()]}.
@@ -172,7 +189,11 @@ validate_term(Validator, Term, Options, Validators) ->
                     {invalid_option_value, Option, Reason}
             end;
         {invalid, Reason} ->
-            {invalid, Reason}
+            {invalid, Reason};
+        {missing_options, MissingOptions} ->
+            {missing_options, MissingOptions};
+        {invalid_options, InvalidOptions} ->
+            {invalid_options, InvalidOptions}
     end.
 
 validate_term_with_options(_Validator, Term, [], _Validators) ->
