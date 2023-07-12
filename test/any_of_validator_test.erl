@@ -16,7 +16,7 @@ any_of_validator_test() ->
         {number, [integer_only]},
         {string, [ascii, {pattern, "^Hello"}]}
     ],
-    Format = {any_of, [{formats, AnyFormats}]},
+    Format = {any_of, AnyFormats},
 
     {invalid, {not_any_of, AnyFormats}} = term_validator:validate(yolo, Format),
     valid = term_validator:validate(true, Format),
@@ -28,5 +28,8 @@ any_of_validator_test() ->
     {invalid, {not_any_of, AnyFormats}} = term_validator:validate([], Format),
     {invalid, {not_any_of, AnyFormats}} = term_validator:validate({}, Format),
     {invalid, {not_any_of, AnyFormats}} = term_validator:validate(#{}, Format),
+
+    InvalidFormat = {any_of, [xyz, {abc, []}]},
+    {invalid_options, [xyz, abc]} = term_validator:validate(yolo, InvalidFormat),
 
     ok.
