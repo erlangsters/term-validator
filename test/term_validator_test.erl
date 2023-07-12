@@ -42,7 +42,7 @@ term_validator_missing_options_test() ->
         (mandatory) -> [foo];
         (optional) -> [bar, quz]
     end),
-    meck:expect(yolo_validator, pre_validate, fun(Term, _, _) -> {valid, Term} end),
+    meck:expect(yolo_validator, pre_validate, fun(Term, Options, _) -> {valid, Term, Options} end),
     meck:expect(yolo_validator, validate, fun(Term, _, _) -> {valid, Term} end),
     meck:expect(yolo_validator, post_validate, fun(_, _) -> valid end),
 
@@ -63,7 +63,7 @@ term_validator_invalid_options_test() ->
         (mandatory) -> [];
         (optional) -> [foo]
     end),
-    meck:expect(yolo_validator, pre_validate, fun(Term, _, _) -> {valid, Term} end),
+    meck:expect(yolo_validator, pre_validate, fun(Term, Options, _) -> {valid, Term, Options} end),
     meck:expect(yolo_validator, validate, fun(Term, _, _) -> {valid, Term} end),
     meck:expect(yolo_validator, post_validate, fun(_, _) -> valid end),
 
@@ -82,7 +82,7 @@ term_validator_dynamic_mandatory_options_test() ->
         (mandatory) -> dynamic;
         (optional) -> []
     end),
-    meck:expect(yolo_validator, pre_validate, fun(Term, _, _) -> {valid, Term} end),
+    meck:expect(yolo_validator, pre_validate, fun(Term, Options, _) -> {valid, Term, Options} end),
     meck:expect(yolo_validator, validate, fun(Term, _, _) -> {valid, Term} end),
     meck:expect(yolo_validator, post_validate, fun(_, _) -> valid end),
 
@@ -109,7 +109,7 @@ term_validator_dynamic_optional_options_test() ->
         (mandatory) -> [];
         (optional) -> dynamic
     end),
-    meck:expect(yolo_validator, pre_validate, fun(Term, _, _) -> {valid, Term} end),
+    meck:expect(yolo_validator, pre_validate, fun(Term, Options, _) -> {valid, Term, Options} end),
     meck:expect(yolo_validator, validate, fun(Term, _, _) -> {valid, Term} end),
     meck:expect(yolo_validator, post_validate, fun(_, _) -> valid end),
 
@@ -138,7 +138,7 @@ term_validator_pre_validate_test() ->
         (mandatory) -> [];
         (optional) -> [foo, bar, quz]
     end),
-    meck:expect(yolo_validator, pre_validate, fun(42, Options, _) -> {valid, 43} end),
+    meck:expect(yolo_validator, pre_validate, fun(42, Options, _) -> {valid, 43, Options} end),
     meck:expect(yolo_validator, validate, fun(43, _, _) -> {valid, 43} end),
     meck:expect(yolo_validator, post_validate, fun(_, _) -> valid end),
 
@@ -152,6 +152,36 @@ term_validator_pre_validate_test() ->
 
     ok.
 
+term_validator_pre_validate_options_test() ->
+    % Variation of the previous test that transform the options.
+    Options = [{foo, true}, {bar, 42}, {quz, "Hello world!"}],
+
+    meck:new(yolo_validator, [non_strict]),
+    meck:expect(yolo_validator, options, fun
+        (mandatory) -> [];
+        (optional) -> [foo, bar, quz]
+    end),
+    meck:expect(
+        yolo_validator,
+        pre_validate,
+        fun(1, [{foo, true}, {bar, 42}, {quz, "Hello world!"}], _) ->
+            {valid, 2, [{quz, true}, {bar, 42}, {foo, "Hello world!"}]}
+        end
+    ),
+    meck:expect(yolo_validator, validate, fun
+        (2, {quz, true}, _) -> {valid, 3};
+        (3, {bar, 42}, _) -> {valid, 4};
+        (4, {foo, "Hello world!"}, _) -> {valid, 5}
+    end),
+    meck:expect(yolo_validator, post_validate, fun(5, _) -> valid end),
+
+    Validators = #{yolo => yolo_validator},
+    valid = term_validator:validate(1, {yolo, Options}, Validators),
+
+    meck:unload(yolo_validator),
+
+    ok.
+
 term_validator_validate_test() ->
     Options = [{foo, true}, {bar, 42}, {quz, "Hello world!"}],
 
@@ -160,7 +190,7 @@ term_validator_validate_test() ->
         (mandatory) -> [];
         (optional) -> [foo, bar, quz]
     end),
-    meck:expect(yolo_validator, pre_validate, fun(Term, _, _) -> {valid, Term} end),
+    meck:expect(yolo_validator, pre_validate, fun(Term, Options, _) -> {valid, Term, Options} end),
     meck:expect(yolo_validator, validate, fun
         (42, {foo, true}, _) -> {valid, 43};
         (43, {bar, 42}, _) -> {valid, 44};
@@ -197,7 +227,7 @@ term_validator_post_validate_test() ->
         (mandatory) -> [];
         (optional) -> [foo, bar, quz]
     end),
-    meck:expect(yolo_validator, pre_validate, fun(Term, _, _) -> {valid, Term} end),
+    meck:expect(yolo_validator, pre_validate, fun(Term, Options, _) -> {valid, Term, Options} end),
     meck:expect(yolo_validator, validate, fun(Term, _, _) -> {valid, Term} end),
     meck:expect(yolo_validator, post_validate, fun(42, _) -> valid end),
 

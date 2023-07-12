@@ -20,8 +20,8 @@ options(mandatory) ->
 options(optional) ->
     [min, max, integer_only, multiple_of].
 
-pre_validate(Term, _Options, _Validators) when is_number(Term) ->
-    {valid, Term};
+pre_validate(Term, Options, _Validators) when is_number(Term) ->
+    {valid, Term, Options};
 pre_validate(_Term, _Options, _Validators) ->
     {invalid, not_number}.
 

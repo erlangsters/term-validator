@@ -20,14 +20,14 @@ options(mandatory) ->
 options(optional) ->
     [allow_number].
 
-pre_validate(true, _Options, _Validators) ->
-    {valid, true};
-pre_validate(false, _Options, _Validators) ->
-    {valid, false};
+pre_validate(true, Options, _Validators) ->
+    {valid, true, Options};
+pre_validate(false, Options, _Validators) ->
+    {valid, false, Options};
 pre_validate(Term, Options, _Validators) ->
     case lists:member(allow_number, Options) of
         true ->
-            {valid, Term};
+            {valid, Term, Options};
         false ->
             {invalid, not_bool}
     end.

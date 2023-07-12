@@ -20,8 +20,8 @@ options(mandatory) ->
 options(optional) ->
     [].
 
-pre_validate(Term, _Options, _Validators) ->
-    {valid, Term}.
+pre_validate(Term, Options, _Validators) ->
+    {valid, Term, Options}.
 
 validate(Term, {formats, Formats}, Validators) ->
     Result = lists:any(fun(Format) ->

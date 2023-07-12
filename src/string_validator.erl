@@ -20,8 +20,8 @@ options(mandatory) ->
 options(optional) ->
     [length, alphabet, pattern, ascii, latin1].
 
-pre_validate(Term, _Options, _Validators) when is_list(Term) ->
-    {valid, Term};
+pre_validate(Term, Options, _Validators) when is_list(Term) ->
+    {valid, Term, Options};
 pre_validate(_Term, _Options, _Validators) ->
     {invalid, not_string}.
 

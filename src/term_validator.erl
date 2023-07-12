@@ -42,7 +42,7 @@
 -callback options(mandatory | optional) -> dynamic | [option_name()].
 
 -callback pre_validate(term(), options(), validators()) ->
-    {valid, term()} |
+    {valid, term(), options()} |
     {invalid, Reason :: term()} |
     {missing_options, [option_name()]} |
     {invalid_options, [option_name()]}
@@ -179,8 +179,8 @@ has_invalid_options(Options, ValidatorOptions) ->
     valid | {invalid | Reason :: term()}.
 validate_term(Validator, Term, Options, Validators) ->
     case Validator:pre_validate(Term, Options, Validators) of
-        {valid, NextTerm} ->
-            case validate_term_with_options(Validator, NextTerm, Options, Validators) of
+        {valid, NextTerm, NextOptions} ->
+            case validate_term_with_options(Validator, NextTerm, NextOptions, Validators) of
                 {valid, NextNextTerm} ->
                     Validator:post_validate(NextNextTerm, Validators);
                 {invalid, Reason} ->

@@ -20,12 +20,12 @@ options(mandatory) ->
 options(optional) ->
     [one_of, allow_string].
 
-pre_validate(Term, _Options, _Validators) when is_atom(Term) ->
-    {valid, Term};
+pre_validate(Term, Options, _Validators) when is_atom(Term) ->
+    {valid, Term, Options};
 pre_validate(Term, Options, _Validators) when is_list(Term) ->
     case lists:member(allow_string, Options) of
         true ->
-            {valid, list_to_atom(Term)};
+            {valid, list_to_atom(Term), Options};
         false ->
             {invalid, not_atom}
     end;
