@@ -10,14 +10,15 @@
 -module(all_of_validator).
 -behaviour(term_validator).
 
--export([mandatory_options/0]).
--export([options/0]).
+-export([options/1]).
 -export([pre_validate/3]).
 -export([validate/3]).
 -export([post_validate/2]).
 
-mandatory_options() -> [].
-options() -> [].
+options(mandatory) ->
+    [];
+options(optional) ->
+    [].
 
 pre_validate(Term, _Options, _Validators) ->
     {valid, Term}.

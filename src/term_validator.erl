@@ -39,8 +39,7 @@
     validator_name() := module()
 }.
 
--callback mandatory_options() -> [option_name()].
--callback options() -> [option_name()].
+-callback options(mandatory | optional) -> [option_name()].
 
 -callback pre_validate(term(), options(), validators()) ->
     {valid, term()} |
@@ -92,14 +91,14 @@ validate(Term, Format, Validators) ->
         undefined ->
             {no_validator, Name};
         Validator ->
-            ValidatorMandatoryOptions = Validator:mandatory_options(),
-            ValidatorOptions = Validator:options(),
-            AllValidatorOptions = ValidatorMandatoryOptions ++ ValidatorOptions,
-            case has_missing_options(Options, ValidatorMandatoryOptions) of
+            MandatoryOptions = Validator:options(mandatory),
+            OptionalOptions = Validator:options(optional),
+            AllOptions = MandatoryOptions ++ OptionalOptions,
+            case has_missing_options(Options, MandatoryOptions) of
                 {yes, MissingOptions} ->
                     {missing_options, MissingOptions};
                 no ->
-                    case has_invalid_options(Options, AllValidatorOptions) of
+                    case has_invalid_options(Options, AllOptions) of
                         {yes, InvalidOptions} ->
                             {invalid_options, InvalidOptions};
                         no ->

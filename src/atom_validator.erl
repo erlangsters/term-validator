@@ -10,14 +10,15 @@
 -module(atom_validator).
 -behaviour(term_validator).
 
--export([mandatory_options/0]).
--export([options/0]).
+-export([options/1]).
 -export([pre_validate/3]).
 -export([validate/3]).
 -export([post_validate/2]).
 
-mandatory_options() -> [].
-options() -> [one_of, allow_string].
+options(mandatory) ->
+    [];
+options(optional) ->
+    [one_of, allow_string].
 
 pre_validate(Term, _Options, _Validators) when is_atom(Term) ->
     {valid, Term};
