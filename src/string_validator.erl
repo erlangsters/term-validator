@@ -18,10 +18,34 @@
 options(mandatory) ->
     [];
 options(optional) ->
-    [length, alphabet, pattern, ascii, latin1].
+    [length, min, max, alphabet, pattern, ascii, latin1].
 
 pre_validate(Term, Options, _Validators) when is_list(Term) ->
-    {valid, Term, Options};
+    % We want to invalidate the 'min' and 'max' options when the 'length'
+    % option is used (as they are shortcuts for the 'length' option).
+    case proplists:is_defined(length, Options) of
+        true ->
+            InvalidOptions1 = case proplists:is_defined(min, Options) of
+                true ->
+                    [min];
+                false ->
+                    []
+            end,
+            InvalidOptions2 = case proplists:is_defined(max, Options) of
+                true ->
+                    InvalidOptions1 ++ [max];
+                false ->
+                    InvalidOptions1
+            end,
+            case InvalidOptions2 of
+                [] ->
+                    {valid, Term, Options};
+                _ ->
+                    {invalid_options, InvalidOptions2}
+            end;
+        false ->
+            {valid, Term, Options}
+    end;
 pre_validate(_Term, _Options, _Validators) ->
     {invalid, not_string}.
 
@@ -32,6 +56,13 @@ validate(Term, {length, {Minimum, Maximum}}, _Validators) ->
         {invalid, Reason} ->
             {invalid, Reason}
     end;
+validate(Term, {min, Minimum}, Validators) ->
+    % The 'min' option is a shortcut for "{length, {Minimum, no_max}}".
+    validate(Term, {length, {Minimum, no_max}}, Validators);
+validate(Term, {max, Maximum}, Validators) ->
+    % The 'max' option is a shortcut for "{length, {no_min, Maximum}}".
+    validate(Term, {length, {no_min, Maximum}}, Validators);
+
 validate(Term, {alphabet, CharacterSet}, _Validators) when is_atom(CharacterSet) ->
     Max = case CharacterSet of
         ascii -> 127;

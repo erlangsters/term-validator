@@ -102,6 +102,51 @@ string_validator_length_max_test() ->
 
     ok.
 
+string_validator_min_test() ->
+    Format1 = {string, [{min, 4}]},
+    Format2 = {string, [{min, {4, inclusive}}]},
+    Format3 = {string, [{min, {4, exclusive}}]},
+
+    {invalid, {too_short, must_be_greater_or_equal_to, 4}} = term_validator:validate("123", Format1),
+    valid = term_validator:validate("1234", Format1),
+
+    {invalid, {too_short, must_be_greater_or_equal_to, 4}} = term_validator:validate("123", Format2),
+    valid = term_validator:validate("1234", Format2),
+
+    {invalid, {too_short, must_be_strictly_greater_than, 4}} = term_validator:validate("123", Format3),
+    {invalid, {too_short, must_be_strictly_greater_than, 4}} = term_validator:validate("1234", Format3),
+
+    ok.
+
+string_validator_max_test() ->
+    Format1 = {string, [{max, 8}]},
+    Format2 = {string, [{max, {8, inclusive}}]},
+    Format3 = {string, [{max, {8, exclusive}}]},
+
+    {invalid, {too_long, must_be_less_or_equal_to, 8}} = term_validator:validate("123456789", Format1),
+    valid = term_validator:validate("12345678", Format1),
+
+    {invalid, {too_long, must_be_less_or_equal_to, 8}} = term_validator:validate("123456789", Format2),
+    valid = term_validator:validate("12345678", Format2),
+
+    {invalid, {too_long, must_be_strictly_less_than, 8}} = term_validator:validate("123456789", Format3),
+    {invalid, {too_long, must_be_strictly_less_than, 8}} = term_validator:validate("12345678", Format3),
+
+    ok.
+
+string_validator_min_max_test() ->
+    % Test if the 'min' and 'max' options become invalid when used with the
+    % 'length' option.
+    Format1 = {string, [{length, {4, no_max}}, {min, 4}]},
+    Format2 = {string, [{length, {no_min, 8}}, {max, 8}]},
+    Format3 = {string, [{length, {4, 8}}, {min, 4}, {max, 8}]},
+
+    {invalid_options, [min]} = term_validator:validate("", Format1),
+    {invalid_options, [max]} = term_validator:validate("", Format2),
+    {invalid_options, [min, max]} = term_validator:validate("", Format3),
+
+    ok.
+
 string_validator_alphabet_ascii_test() ->
     Format = {string, [{alphabet, ascii}]},
 
