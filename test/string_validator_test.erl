@@ -49,6 +49,17 @@ string_validator_length_test() ->
     {invalid, {too_long, must_be_less_or_equal_to, 8}} =
         term_validator:validate("123456789", Format2),
 
+    Format3 = {string, [{length, {{4, exclusive}, {8, exclusive}}}]},
+
+    {invalid, {too_short, must_be_strictly_greater_than, 4}} =
+        term_validator:validate("1234", Format3),
+
+    valid = term_validator:validate("12345", Format3),
+    valid = term_validator:validate("1234567", Format3),
+
+    {invalid, {too_long, must_be_strictly_less_than, 8}} =
+        term_validator:validate("12345678", Format3),
+
     ok.
 
 string_validator_length_min_test() ->
