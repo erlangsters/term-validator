@@ -1,7 +1,8 @@
-# Documentation of the Erlang Term Validator
+# Term Validator - Documentation
 
-This is the documentation of the Erlang Term Validator. It explains how to use
-the built-in validators and how to implement your own ones.
+This is the documentation of the
+[Term Validator](https://github.com/erlangsters/term-validator) project. It
+explains how to use the built-in validators and how to implement your own ones.
 
 **Table of Contents**
 

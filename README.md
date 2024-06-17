@@ -1,4 +1,4 @@
-# Erlang Term Validator
+# Term Validator
 
 A quick and simple Erlang term validator. It supports validation of the common
 built-in Erlang types and can be extended with custom validators.
@@ -51,7 +51,7 @@ Format = {list, [
     {min, 2}
 ]}.
 
-{invalid, not_list} = 
+{invalid, not_list} =
   term_validator:validate(42, Format).
 {invalid, {length, {must_be_greater_or_equal, 2}}} =
   term_validator:validate([42], Format).
@@ -89,7 +89,7 @@ your project.
 
 ```
 {deps, [
-  {etv, {git, "https://github.com/erlangsters/erlang-term-validator.git", {tag, "master"}}}
+  {term_validator, {git, "https://github.com/erlangsters/term-validator.git", {tag, "master"}}}
 ]}.
 ```
 
@@ -97,8 +97,8 @@ If you happen to use the **Erlang.mk** build system, then add the following to
 your Makefile.
 
 ```
-BUILD_DEPS = etv
-dep_etv = git https://github.com/erlangsters/erlang-term-validator master
+BUILD_DEPS = term_validator
+dep_term_validator = git https://github.com/erlangsters/term-validator master
 ```
 
 In practice, you want to replace the branch "master" with a specific "tag" to
