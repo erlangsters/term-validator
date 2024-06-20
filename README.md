@@ -116,20 +116,22 @@ can easily extend it with your own validators.
 
 Here is the list of the built-in validators with their options.
 
-| Validator | Options                                                                  |
-| --------- | ------------------------------------------------------------------------ |
-| `any`     | *No options.*                                                            |
-| `atom`    | `one_of`, `allow_string`                                                 |
-| `bool`    | `allow_number`                                                           |
-| `number`  | `min`, `max`, `integer_only`, `multiple_of`                              |
-| `string`  | `length`, `min`\*, `max`\*, `alphabet`, `pattern`, `ascii`\*, `latin1`\* |
-| `list`    | `item`, `length`                                                         |
-| `tuple`   | `elements`                                                               |
-| `map`     | `fields`                                                                 |
-| `any_of`  | *Any term format.* **                                                    |
-| `all_of`  | *Any term format.* **                                                    |
+| Validator       | Options                                                                  |
+| --------------- | ------------------------------------------------------------------------ |
+| `any`           | *No options.*                                                            |
+| `atom`          | `one_of`, `allow_string`                                                 |
+| `bool`          | `allow_number`                                                           |
+| `number`        | `min`, `max`, `integer_only`, `multiple_of`                              |
+| `string`        | `length`, `min`\*, `max`\*, `alphabet`, `pattern`, `ascii`\*, `latin1`\* |
+| `list`          | `item`, `length`, `min`\*, `max`\*                                       |
+| `tuple`         | `elements`                                                               |
+| `tuple_dynamic` | `element`, `length`, `min`\*, `max`\*                                    |
+| `map`           | `fields`                                                                 |
+| `map_dynamic`   | `key`, `value`, `length`, `min`\*, `max`\*                               |
+| `any_of`        | *Any term format.* **                                                    |
+| `all_of`        | *Any term format.* **                                                    |
 
-*Shortcut options; they cannot be used with the `length` option.  
+*Shortcut options; they cannot be used with the `length` option.
 **Instead of being a list of options, it's a list of term format.
 
 The `any` validator will validate any Erlang term (useful in some scenarios).

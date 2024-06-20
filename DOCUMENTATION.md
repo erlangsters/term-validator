@@ -14,7 +14,9 @@ explains how to use the built-in validators and how to implement your own ones.
     - The 'string' validator
     - The 'list' validator
     - The 'tuple' validator
+    - The 'tuple_dynamic' validator
     - The 'map' validator
+    - The 'map_dynamic' validator
     - The 'any_of' validator
     - The 'all_of' validator
 - Implementing custom validators
@@ -28,7 +30,7 @@ To be written.
 
 ## Using the built-in validators
 
-The built-in validatrs are automatically included when using the `validate/2`
+The built-in validators are automatically included when using the `validate/2`
 function. However, it you implement your own validators, you will need to
 extend the list of validators to use during validation, and use the
 `validate/3` function instead.
@@ -134,7 +136,16 @@ To be written.
 
 To be written.
 
+### The 'tuple_dynamic' validator
+
+To be written.
+
+
 ### The 'map' validator
+
+To be written.
+
+### The 'map_dynamic' validator
 
 To be written.
 
