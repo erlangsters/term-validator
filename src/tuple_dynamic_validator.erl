@@ -5,9 +5,9 @@
 %% is released under the MIT license. Please refer to the LICENSE.txt file that
 %% can be found at the root of the project directory.
 %%
-%% Written by Jonathan De Wachter <jonathan.dewachter@byteplug.io>, July 2023
+%% Written by Jonathan De Wachter <jonathan.dewachter@byteplug.io>, March 2023
 %%
--module(list_validator).
+-module(tuple_dynamic_validator).
 -behaviour(term_validator).
 
 -export([options/1]).
@@ -16,11 +16,11 @@
 -export([post_validate/2]).
 
 options(mandatory) ->
-    [item];
+    [];
 options(optional) ->
-    [length, min, max].
+    [element, length, min, max].
 
-pre_validate(Term, Options, _Validators) when is_list(Term) ->
+pre_validate(Term, Options, _Validators) when is_tuple(Term) ->
     % We want to invalidate the 'min' and 'max' options when the 'length'
     % option is used (as they are shortcuts for the 'length' option).
     InvalidOptions = length_option_validator:invalid_options(Options),
@@ -31,9 +31,9 @@ pre_validate(Term, Options, _Validators) when is_list(Term) ->
             {invalid_options, InvalidOptions}
     end;
 pre_validate(_Term, _Options, _Validators) ->
-    {invalid, not_list}.
+    {invalid, not_tuple}.
 
-validate(Term, {item, Format}, Validators) ->
+validate(Term, {element, Format}, Validators) ->
     % Check if each item of the list against the item format.
     Result = lists:foldr(
         fun({Item, Index}, Accumulator) ->
@@ -45,16 +45,16 @@ validate(Term, {item, Format}, Validators) ->
             end
         end,
         [],
-        lists:zip(Term, lists:seq(1, erlang:length(Term)))
+        lists:zip(tuple_to_list(Term), lists:seq(1, erlang:size(Term)))
     ),
     case Result of
         [] ->
             {valid, Term};
         _ ->
-            {invalid, {items, Result}}
+            {invalid, {elements, Result}}
     end;
 validate(Term, {length, {Minimum, Maximum}}, _Validators) ->
-    case length_option_validator:validate_length(erlang:length(Term), Minimum, Maximum) of
+    case length_option_validator:validate_length(erlang:size(Term), Minimum, Maximum) of
         valid ->
             {valid, Term};
         {invalid, Reason} ->

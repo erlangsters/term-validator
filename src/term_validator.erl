@@ -130,6 +130,7 @@ validators() ->
         string => string_validator,
         list => list_validator,
         tuple => tuple_validator,
+        tuple_dynamic => tuple_dynamic_validator,
         map => map_validator,
         any_of => any_of_validator,
         all_of => all_of_validator
