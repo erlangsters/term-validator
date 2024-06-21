@@ -23,9 +23,11 @@
 -export([validators/0]).
 
 %%
-%% Main API.
+%% Term validator API.
 %%
-%% To be written.
+%% It provides the single validate/2 function this library features (along with
+%% a variant to specify a custom set of validators) and a function to retrieve
+%% the built-in validators.
 %%
 -type validator_name() :: atom().
 
@@ -67,18 +69,19 @@
 .
 
 %%
-%% @doc Brief description.
+%% Validate an Erlang term using the built-in validators.
 %%
-%% Long description.
+%% It is equivalent to calling the validate/3 function with the list of
+%% built-in validators.
 %%
 -spec validate(term(), format()) -> validate_ret().
 validate(Term, Format) ->
     validate(Term, Format, validators()).
 
 %%
-%% @doc Brief description.
+%% Validate an Erlang term using the specified validators.
 %%
-%% Long description.
+%% It validates an Erlang term using a specified set of validators.
 %%
 -spec validate(term(), format(), validators()) -> validate_ret().
 validate(Term, Format, Validators) ->
@@ -117,10 +120,12 @@ validate(Term, Format, Validators) ->
     end.
 
 %%
-%% @doc Brief description.
+%% Return the built-in validators.
 %%
-%% Long description.
+%% It returns a map containing the built-in validators. The keys are the
+%% validator names and the values are the validator modules.
 %%
+-spec validators() -> validators().
 validators() ->
     #{
         any => any_validator,
