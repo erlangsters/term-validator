@@ -14,11 +14,10 @@ jobs:
 
     steps:
       - name: Get the source code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Build the library
         run: make
 
       - name: Run the regression tests
         run: make eunit
-
