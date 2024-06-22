@@ -8,9 +8,13 @@ on:
 
 jobs:
   build:
+    strategy:
+      matrix:
+        erlang: [24, 25]
+
     runs-on: ubuntu-latest
     container:
-      image: erlang:24
+      image: erlang:${{ matrix.erlang }}
 
     steps:
       - name: Get the source code
