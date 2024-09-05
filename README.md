@@ -10,9 +10,10 @@ valid = term_validator:validate(42, Format).
 {invalid, not_number} = term_validator:validate("Hello world!", Format).
 ```
 
-The documentation is entirely self-contained in the *DOCUMENTATION.md* file in
-the root of the project folder. You may also want to check the regression
-suites in the *test* folder for more examples.
+The documentation is entirely self-contained in the
+[DOCUMENTATION.md](/DOCUMENTATION.md) file in the root of the project folder.
+You may also want to check the regression suites in the *test* folder for more
+examples.
 
 > If you need to validate settings/config files or JSON data, check
 > out the [Settings Validator](https://github.com/erlangsters/settings-validator)
@@ -24,10 +25,11 @@ under the MIT license.
 ## Getting started
 
 The `term_validator` module features a single `validate/2` function that takes
-a term and its expected format, then returns `valid` or `{invalid, Reason}`.
+an Erlang term and its expected format, then returns `valid` or
+`{invalid, Reason}`.
 
-Format is a tuple with the first element being the validator name, and the
-second element being a list of options to be passed to the underlying
+A **term format** is a tuple with the first element being the validator name,
+and the second element being a list of options to be passed to the underlying
 validate functions. If no options are needed, the format can simply be the
 validator name.
 
@@ -76,16 +78,23 @@ module, then you can pass it to the validate function as follows.
 Format = {list, [{item, foo}]},
 Validators = maps:merge(term_validator:validators(), #{foo => my_foo_validator}),
 valid = term_validator:validate([foo, foo, foo], Format, Validators),
+
+% If you do not add your custom validator, it's reported.
+{no_validator, foo} = term_validator:validate([foo, foo, foo], Format),
 ```
 
 With that example being shown, in practice you hardly ever need to create
 custom validators as most complex validation rules be created with a
 combination of the built-in validators.
 
+Refer to the list of built-in validators to understand how to write your term
+format. You will find a quick [table](#the-built-in-validators) below but
+they're extensively explained in the [documentation](/DOCUMENTATION.md).
+
 ## Using it in your project
 
-With the **Rebar3** build system, add the following to the `rebar.config`` file of
-your project.
+With the **Rebar3** build system, add the following to the `rebar.config` file
+of your project.
 
 ```
 {deps, [
@@ -131,14 +140,14 @@ Here is the list of the built-in validators with their options.
 | `any_of`        | *Any term format.* **                                                    |
 | `all_of`        | *Any term format.* **                                                    |
 
-*Shortcut options; they cannot be used with the `length` option.
+*Shortcut options; they cannot be used with the `length` option.  
 **Instead of being a list of options, it's a list of term format.
 
 The `any` validator will validate any Erlang term (useful in some scenarios).
 
 If you're interested in validators for more complex types such as IPs, ports,
-dates, colors, etc, you may want to check out the Extended ETV repository
-(https://github.com/erlangsters/extended-erlang-term-validator).
+dates, colors, etc, you may want to check out the Extended Term Validator
+repository (https://github.com/erlangsters/extended-term-validator).
 
 ## Writing a new validator
 
