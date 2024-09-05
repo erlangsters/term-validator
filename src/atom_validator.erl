@@ -8,7 +8,7 @@
 %% Written by Jonathan De Wachter <jonathan.dewachter@byteplug.io>, March 2023
 %%
 -module(atom_validator).
--behaviour(term_validator).
+-behavior(term_validator).
 
 -export([options/1]).
 -export([pre_validate/3]).

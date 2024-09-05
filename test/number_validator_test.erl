@@ -31,11 +31,11 @@ number_validator_min_test() ->
     Format3 = {number, [{min, {42, exclusive}}]},
 
     {invalid, {must_be_greater_or_equal_to, 42}} = term_validator:validate(41, Format1),
-    valid= term_validator:validate(42, Format1),
+    valid = term_validator:validate(42, Format1),
     valid = term_validator:validate(43, Format1),
 
     {invalid, {must_be_greater_or_equal_to, 42}} = term_validator:validate(41, Format2),
-    valid= term_validator:validate(42, Format2),
+    valid = term_validator:validate(42, Format2),
     valid = term_validator:validate(43, Format2),
 
     {invalid, {must_be_strictly_greater_than, 42}} = term_validator:validate(41, Format3),
