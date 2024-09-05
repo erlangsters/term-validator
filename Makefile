@@ -1,5 +1,5 @@
 PROJECT = term_validator
-PROJECT_DESCRIPTION = New project
+PROJECT_DESCRIPTION = A quick and simple Erlang term validator.
 PROJECT_VERSION = 0.1.0
 
 TEST_DEPS = meck
