@@ -12,18 +12,16 @@
 -include_lib("eunit/include/eunit.hrl").
 
 term_validator_test() ->
-    % XXX: Complete this after implementing the built-in validators.
-
-    % valid = term_validator:validate(true, bool),
-    % valid = term_validator:validate(false, bool),
-    % valid = term_validator:validate(42, integer),
-    % valid = term_validator:validate(42.5, float),
-    % valid = term_validator:validate(42, number),
-    % valid = term_validator:validate(42.5, number),
-    % valid = term_validator:validate("Hello world!", string),
-    % valid = term_validator:validate([], list),
-    % valid = term_validator:validate({}, tuple),
-    % valid = term_validator:validate(#{}, map),
+    valid = term_validator:validate(true, bool),
+    valid = term_validator:validate(false, bool),
+    valid = term_validator:validate(42, number),
+    valid = term_validator:validate(42.5, number),
+    valid = term_validator:validate("Hello world!", string),
+    valid = term_validator:validate([], {list, [{item, any}]}),
+    valid = term_validator:validate({}, {tuple, [{elements, []}]}),
+    valid = term_validator:validate({}, tuple_dynamic),
+    valid = term_validator:validate(#{}, {map, [{fields, []}]}),
+    valid = term_validator:validate(#{}, map_dynamic),
 
     ok.
 
