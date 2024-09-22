@@ -15,9 +15,7 @@
 -export([validate/3]).
 -export([post_validate/2]).
 
-options(mandatory) ->
-    dynamic;
-options(optional) ->
+options(_) ->
     dynamic.
 
 pre_validate(Term, [{formats, Formats}] = Options, Validators) ->

@@ -442,7 +442,7 @@ To implement a custom validator, you must write a callback module implementing
 the **term_validator** behavior. Then, in order to use this custom
 validator, you call the usual `term_validator:validate/3` with the validator.
 
-If you're implementing the 'xyz' validator, your callback module typically is
+If you're implementing the "xyz" validator, your callback module typically is
 named `xyz_validator` and calling the validate function will ressemble this.
 
 ```erlang
@@ -459,9 +459,8 @@ Validators = maps:merge(term_validator:validators(), #{xyz => xyz_validator}).
 term_validator:validate(Term, Format, Validators).
 ```
 
-Because it's a tedious syntax, you will usually write your own validate
-function that will hide this details away and will include all the custom
-validators of your project.
+(Usually, you write your own validate/2 function that includes all the custom
+validators of your project.)
 
 Having a look at the implementation of the built-in validators, while reading
 this section, is not a bad idea.
@@ -481,39 +480,42 @@ can interrupt it and return the reason why a term is invalid.
 ### The validator options
 
 The custom validator must provide the list of options it supports. They come
-in two flavors, the mandatory ones and the optional ones.
-
-The mandatory options are specified with the `mandatory_options/0` callback
-which returns the list of mandatory options. For instance, if you make the
-`foo` option mandatory, the term format will require to include the `foo`
-option and will therefore look like this: `{xyz, [{foo, Value}]}`.
+in two flavors, the mandatory ones and the optional ones. They're specified
+with the `options/1` callback function which is called with both the
+`mandatory` atom or the `optional` atom.
 
 ```erlang
-mandatory_options() -> [foo].
+options(mandatory) ->
+  [foo];
+options(optional) ->
+  [bar].
 ```
 
-This will cause the validate function to return `{missing_options, [foo]}`
-early (with no additional work in the validator implementation) if the option
-is not included in the format.
-
-The optional options are specified with the `options` callback which returns
-the list of optional options.
+In this example, the `foo` option is mandatory and therefore, the term format
+will require the `foo` option to be valid.
 
 ```erlang
-options() -> [bar]
+Format = {xyz, [{foo, Value}]}.
 ```
 
-This will cause the validate function to return `{invalid_options, [quz]}` for
-instance, if you include the `quz` option to the term format, which is not
-recognized by your validator (and again, with no additional work in the
-validator implementation).
+Omitting it will cause the validate function to return
+`{missing_options, [foo]}` early (with no additional work in the validator
+implementation). The optional options can safely be omitted.
+
+The previous example also implies that any other options are invalid and it
+will cause the validate function to return `{invalid_options, [quz]}` for
+instance, if you include the `quz` option to the term format (and again, with
+no additional work in the validator implementation).
 
 Additionally, if you validator must accept an arbitrary set of options, you can
 return the `dynamic` atom.
 
 ```erlang
-options() -> dynamic.
+options(_) ->
+    dynamic.
 ```
+
+(It's used in the `any_of` and `all_of` validators.)
 
 The options validation is then delegated to your `pre_validate/3` callback
 function.
