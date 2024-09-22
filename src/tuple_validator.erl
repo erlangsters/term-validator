@@ -25,6 +25,10 @@ pre_validate(Term, Options, _Validators) when is_tuple(Term) ->
 pre_validate(_Term, _Options, _Validators) ->
     {invalid, not_tuple}.
 
+validate(Term, {elements, Elements}, _Validators) when tuple_size(Term) > length(Elements) ->
+    {invalid, too_many_elements};
+validate(Term, {elements, Elements}, _Validators) when tuple_size(Term) < length(Elements) ->
+    {invalid, too_few_elements};
 validate(Term, {elements, Elements}, Validators) ->
     Result = lists:foldr(
         fun({Format, Index}, Accumulator) ->

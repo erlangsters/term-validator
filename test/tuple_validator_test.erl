@@ -33,4 +33,10 @@ tuple_validator_elements_test() ->
     {invalid, {elements, [{1, not_string}, {3, not_bool}]}} =
         term_validator:validate(Term, {tuple, [{elements, [string, number, bool]}]}),
 
+    % Test when the tuple has more and less elements than expected.
+    {invalid, too_many_elements} =
+        term_validator:validate({true, 42, "Hello world!", 0.0}, Format),
+    {invalid, too_few_elements} =
+        term_validator:validate({true, 42}, Format),
+
     ok.
