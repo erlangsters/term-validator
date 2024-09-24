@@ -1,6 +1,6 @@
 # Changelog
 
-This is the documentation of the 
+This is the changelog of the 
 [Term Validator](https://github.com/erlangsters/term-validator) library.
 
 ## 1.0.1
