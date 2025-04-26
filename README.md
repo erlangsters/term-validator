@@ -1,5 +1,11 @@
 # Term Validator
 
+![Supported Erlang/OTP Versions](https://img.shields.io/badge/erlang%2Fotp-24%7C25%7C26%7C27-%23a90432)
+![Current Version](https://img.shields.io/badge/latest_version-1.0.0-%23354052)
+![License](https://img.shields.io/github/license/erlangsters/term-validator)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/erlangsters/term-validator/workflow.yml)](https://github.com/erlangsters/term-validator/actions/workflows/workflow.yml)
+[![Documentation Link](https://img.shields.io/badge/documentation-here-yellow)](http://erlangsters.github.io/term-validator/)
+
 A quick and simple Erlang term validator. It supports validation of the common
 built-in Erlang types and can be extended with custom validators.
 
