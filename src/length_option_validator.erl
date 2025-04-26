@@ -8,6 +8,7 @@
 %% Written by Jonathan De Wachter <jonathan.dewachter@byteplug.io>, July 2023
 %%
 -module(length_option_validator).
+-moduledoc false.
 
 -export([invalid_options/1]).
 -export([validate_length/3]).

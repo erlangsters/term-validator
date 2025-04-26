@@ -8,6 +8,8 @@
 %% Written by Jonathan De Wachter <jonathan.dewachter@byteplug.io>, March 2023
 %%
 -module(atom_validator).
+-moduledoc false.
+
 -behavior(term_validator).
 
 -export([options/1]).
