@@ -10,10 +10,9 @@ valid = term_validator:validate(42, Format).
 {invalid, not_number} = term_validator:validate("Hello world!", Format).
 ```
 
-The documentation is entirely self-contained in the
-[DOCUMENTATION.md](/DOCUMENTATION.md) file in the root of the project folder.
-You may also want to check the regression suites in the *test* folder for more
-examples.
+Consult the documentation to know how to use the built-in validators or write
+your own ones. You may also want to check the regression suites in the *test*
+folder for more examples.
 
 > If you need to validate settings/config files or JSON data, check
 > out the [Settings Validator](https://github.com/erlangsters/settings-validator)
