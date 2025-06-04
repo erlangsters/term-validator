@@ -2,10 +2,10 @@
 
 [![Erlangsters Repository](https://img.shields.io/badge/erlangsters-term--validator-%23a90432)](https://github.com/erlangsters/term-validator)
 ![Supported Erlang/OTP Versions](https://img.shields.io/badge/erlang%2Fotp-27%7C28-%23a90432)
-![Current Version](https://img.shields.io/badge/latest_version-1.0.0-%23354052)
+![Current Version](https://img.shields.io/badge/version-1.0.0-%23354052)
 ![License](https://img.shields.io/github/license/erlangsters/term-validator)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/erlangsters/term-validator/workflow.yml)](https://github.com/erlangsters/term-validator/actions/workflows/workflow.yml)
-[![Documentation Link](https://img.shields.io/badge/documentation-here-yellow)](http://erlangsters.github.io/term-validator/)
+[![Documentation Link](https://img.shields.io/badge/documentation-available-yellow)](http://erlangsters.github.io/term-validator/)
 
 A quick and simple Erlang term validator. It supports validation of the common
 built-in Erlang types and can be extended with custom validators.
@@ -18,15 +18,15 @@ valid = term_validator:validate(42, Format).
 ```
 
 Consult the documentation to know how to use the built-in validators or write
-your own ones. You may also want to check the regression suites in the *test*
+your own ones. You may also want to check the regression suites in the *test/*
 folder for more examples.
 
 > If you need to validate settings/config files or JSON data, check
 > out the [Settings Validator](https://github.com/erlangsters/settings-validator)
 > and [JSON Validator](https://github.com/erlangsters/json-validator) projects.
 
-Written by Jonathan De Wachter (dewachter.jonathan@gmail.com) and released
-under the MIT license.
+Written by the Erlangsters [community](https://about.erlangsters.org/) and
+released under the MIT [license](https://opensource.org/license/mit).
 
 ## Getting started
 
