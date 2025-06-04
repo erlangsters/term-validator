@@ -10,7 +10,7 @@ jobs:
   build:
     strategy:
       matrix:
-        erlang: [27]
+        erlang: [27, 28]
 
     runs-on: ubuntu-latest
     container:

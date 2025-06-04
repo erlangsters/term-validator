@@ -1,6 +1,6 @@
 # Term Validator
 
-![Supported Erlang/OTP Versions](https://img.shields.io/badge/erlang%2Fotp-27-%23a90432)
+![Supported Erlang/OTP Versions](https://img.shields.io/badge/erlang%2Fotp-27%7C28-%23a90432)
 ![Current Version](https://img.shields.io/badge/latest_version-1.0.0-%23354052)
 ![License](https://img.shields.io/github/license/erlangsters/term-validator)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/erlangsters/term-validator/workflow.yml)](https://github.com/erlangsters/term-validator/actions/workflows/workflow.yml)
