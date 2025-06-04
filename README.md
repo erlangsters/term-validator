@@ -1,5 +1,6 @@
 # Term Validator
 
+[![Erlangsters Repository](https://img.shields.io/badge/erlangsters-term--validator-%23a90432)](https://github.com/erlangsters/term-validator)
 ![Supported Erlang/OTP Versions](https://img.shields.io/badge/erlang%2Fotp-27%7C28-%23a90432)
 ![Current Version](https://img.shields.io/badge/latest_version-1.0.0-%23354052)
 ![License](https://img.shields.io/github/license/erlangsters/term-validator)
